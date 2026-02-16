@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⛪ SacredPool - Sacrament Blessing Scheduler
 
-## Getting Started
+Automated weekly scheduling system for 3 priests to bless the sacrament at Sunday service.
 
-First, run the development server:
+## Live URL
+https://sacredpool.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Architecture
+- **Frontend/Backend**: Next.js 14 (App Router)
+- **Database**: Supabase (project: lygrptakyxwjmvkavqww, us-east-2)
+- **SMS**: Twilio (+19453002848)
+- **Hosting**: Vercel (free tier)
+- **Styling**: Tailwind CSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How It Works
+1. **Monday 9 AM CST**: System texts top 3 priests from queue (sorted by last served date)
+2. Priests reply YES/NO via SMS
+3. **Thursday**: Check-in texts to confirmed priests
+4. **Saturday**: Final reminder with co-server names
+5. **Sunday**: Service happens, stats updated
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Admin Dashboard
+Mobile-first single page at root URL:
+- View current week's assignments (green=confirmed, yellow=pending)
+- Manage priest roster (add/edit/remove)
+- View service history
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Twilio Webhook
+SMS replies are received at `/api/sms/receive` (configured in Twilio)
 
-## Learn More
+## Environment Variables
+Set in Vercel dashboard:
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`
+- `CRON_SECRET`
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Database Schema
+See `supabase-schema.sql` - run in Supabase SQL Editor
